@@ -160,9 +160,12 @@ def read(lines):
             obs_index += lines_per_sat
             # Utwórz słownik obserwacji
             obs = dict(zip(obs_type_order, _obs))
-            # Utwórz obiekt satelity
+            # Znajdz prn
             prn = sat_order[sat_index]
+            if prn[1] == ' ':
+                prn = prn[:1] + '0' + prn[2:]
             system = prn[0]
+            # Utwórz obiekt satelity
             try:
                 satellites[prn].add_obs(epoch_time, obs)
             # Utwórz obiekt satelity dla odpowiedniego systemu

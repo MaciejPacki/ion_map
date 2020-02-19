@@ -6,7 +6,7 @@ import os
 
 
 
-
+# TODO: po wczytaniu obserwacji sprawdzic epoki dla których mozna obliczyć xyz - czy maja l1l2p2c1
 
 obs_files = ["C:\\users\\macie\\desktop\\EPN_DATA\\" + obs_file for obs_file in os.listdir(r"C:\users\macie\Desktop\EPN_DATA")]
 nav_file = r"C:\users\macie\Desktop\ion_map\tests\test_files\brdm0760.15p"

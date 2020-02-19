@@ -39,18 +39,15 @@ class Satellite:
         self.nav[epoch_time] = nav_data
     
     def get_closest_nav(self, epoch):
-        
         nav_epochs = self.nav.keys()
-        try:
-            closest_epoch = min(nav_epochs, key = lambda x: abs(x - epoch))
-        except ValueError:
-            print(epoch)
-            print(nav_epochs)
+        closest_epoch = min(nav_epochs, key = lambda x: abs(x - epoch))
         return self.nav[closest_epoch]
     
     def _calculate_xyz(self, site_xyz, calculator):
         for epoch in self.epochs:
             pseudo = self.obs[epoch]["C1"]
+            if pseudo == None:
+                print(self.prn, epoch)
             nav = self.get_closest_nav(epoch)
             self.xyz[epoch] = calculator(epoch, nav, site_xyz, pseudo)
 
