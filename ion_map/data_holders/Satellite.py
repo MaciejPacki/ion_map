@@ -30,7 +30,13 @@ class Satellite:
         
     @property
     def epochs(self):
-        return sorted(self.obs.keys())  
+        epochs = []
+        for epoch in sorted(self.obs.keys()):
+            if any([self.obs[epoch][o] == None for o in ['C1', 'P2', 'L1', 'L2']]):
+                pass
+            else:
+                epochs.append(epoch)
+        return  epochs
     
     def add_obs(self, epoch_time, obs_data):
         self.obs[epoch_time] = obs_data
@@ -46,8 +52,6 @@ class Satellite:
     def _calculate_xyz(self, site_xyz, calculator):
         for epoch in self.epochs:
             pseudo = self.obs[epoch]["C1"]
-            if pseudo == None:
-                print(self.prn, epoch)
             nav = self.get_closest_nav(epoch)
             self.xyz[epoch] = calculator(epoch, nav, site_xyz, pseudo)
 

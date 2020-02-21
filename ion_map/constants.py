@@ -13,8 +13,7 @@ L2_lambda = c / L2_freq # Dł. fali L2 [m]
 wl_lambda = c / (L1_freq + L2_freq) # Dł. fali wide lane [m]
 
 TEC_const = 1 /40.3e16 * (L1_freq**2 * L2_freq**2) / (L1_freq**2 - L2_freq**2)
-# gamma = L1_freq**2/L2_freq**2
-# TEC_const = L1_freq**2 / (40.3e16 * (gamma - 1))
+
 
 dcb_rec = 20.039e-9 * c # ns, bor1
 # dcb_rec = 4.468e-9 * c # ns, bogi

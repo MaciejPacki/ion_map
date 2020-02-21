@@ -34,7 +34,11 @@ def cycle_slip_detector(epochs, values, out=None):
         calculated_value = np.polyval(poly, current_epoch)
         if abs(values[end_i] - calculated_value) > cycle_slip_threshold:
             out.append(current_epoch)
-            out.append(epochs[end_i+1])
+            try:
+                out.append(epochs[end_i+1])
+            except IndexError:
+                out.append(epochs[end_i])
+                
             cycle_slip_detector(epochs[end_i+1:], values[end_i+1:], out)
             break
     return out
@@ -48,7 +52,7 @@ def arc_detector(L4, MWWL):
     arcs = []
     values = []
     out = []
-    epochs = sorted(L4)
+    epochs = sorted(L4.keys())
     for epoch in epochs:
         values.append(L4[epoch])
     epochs_secs = [common.datetime_to_secs_of_day(x) for x in epochs]
