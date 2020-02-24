@@ -5,8 +5,10 @@ import numpy as np
 # Importy wewnętrzne
 sys.path.append(r"..\ion_map")
 import calculations.arc_detection_new
+import calculations.arc_detection
 import calculations.common
 from readers import rnx_reader, dcb_reader
+
 
 class Test_plots(unittest.TestCase):
     
@@ -26,14 +28,21 @@ class Test_plots(unittest.TestCase):
         site.calculate_satellites_P4_L4_MWWL(sat_dcb)
         
 
-        self.sat = site.satellites['G07']
+        self.sat = site.satellites['G24']
+        self.sat.calculate_arcs()
         
     def test_arc_detector(self):
-        arcs = calculations.arc_detection_new.arc_detector(self.sat.L4, self.sat.MWWL)
+        new_arcs = calculations.arc_detection_new.arc_detector(self.sat.L4, self.sat.MWWL)
+        old_arcs = self.sat.arcs
         
         
-        # for beg, end in self.sat.arcs:
-        #     print(beg, '|', end, '|', end - beg)
+        print('-> LEAST FIT ARCS')
+        for i in old_arcs:
+            print(i[0], i[1])
+            
+        print('\n-> MWWL_TECR CS')
+        for i in new_arcs:
+            print(i)
 
     
 if __name__ == "__main__":
