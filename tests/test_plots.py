@@ -3,6 +3,7 @@ import unittest
 import datetime
 import math
 import numpy as np
+
 # Importy wewnętrzne
 sys.path.append(r"..\ion_map")
 import plotters.plots
@@ -10,7 +11,6 @@ from readers import rnx_reader, dcb_reader
 
 
 class Test_plots(unittest.TestCase):
-    
     @classmethod
     def setUpClass(self):
         o_file = r"C:\users\macie\desktop\ion_map\tests\test_files\bogi0760.15o"
@@ -30,23 +30,20 @@ class Test_plots(unittest.TestCase):
         site.calculate_satellites_L4_shifted()
         site.calculate_satellites_STEC()
         site.calculate_satellites_VTEC(ionosphere_h=350)
-        
+
         self.site = site
-        self.sat1 = site.satellites['G21']
-        self.sat2 = site.satellites['G27']
+        self.sat1 = site.satellites["G21"]
+        self.sat2 = site.satellites["G27"]
 
-
-        
     # def test_obs_comb_2sat(self):
     #     plotters.plots.obs_comb_2sat(self.sat1, self.sat2)
-    
+
     # def test_obs(self):
     #     plotters.plots.obs_comb(self.sat1)
-    
+
     def test_plot_vtec(self):
         plotters.plots.vtec(self.site)
 
-            
 
 if __name__ == "__main__":
-    unittest.main()        
+    unittest.main()

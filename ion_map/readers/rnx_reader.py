@@ -15,7 +15,7 @@ def read(obs_path, nav_path):
     OUT:    site (Site)    - obiekt stacji
     """
     # Czytaj plik obs
-    with open(obs_path, 'r') as file:
+    with open(obs_path, "r") as file:
         lines = file.readlines()
         first_line = lines[0]
         # Znajdz wersję pliku rinex,
@@ -34,8 +34,8 @@ def read(obs_path, nav_path):
                 print(f"Trouble reading {obs_path} file. Unsupported format version.")
         else:
             print(f"Trouble reading {obs_path} file. Not a observation rinex file.")
-    # Czytaj plik nav    
-    with open(nav_path, 'r') as file:
+    # Czytaj plik nav
+    with open(nav_path, "r") as file:
         lines = file.readlines()
         first_line = lines[0]
         # Znajdz wersję pliku rinex,
@@ -46,9 +46,8 @@ def read(obs_path, nav_path):
         if rnx_type == "N":
             if rnx_version == "3":
                 site = rnx3_nav.read(lines, site)
-            else: 
+            else:
                 print(f"Trouble reading {nav_path} file. Unsupported format version.")
         else:
-            print(f"Trouble reading {nav_path} file. Not a navigation rinex file.")    
+            print(f"Trouble reading {nav_path} file. Not a navigation rinex file.")
     return site
-

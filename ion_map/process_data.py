@@ -1,5 +1,6 @@
 from readers import rnx_reader, dcb_reader
 
+
 def site(o_file, n_file, dcb_P1C1_file, dcb_P1P2_file):
     site = rnx_reader.read(o_file, n_file)
     sat_dcb = dcb_reader.read(dcb_P1P2_file, dcb_P1C1_file)
@@ -14,5 +15,5 @@ def site(o_file, n_file, dcb_P1C1_file, dcb_P1P2_file):
 
     site.calculate_satellites_STEC()
     site.calculate_satellites_VTEC(ionosphere_h=450)
-    
+
     return site

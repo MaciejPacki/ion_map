@@ -22,24 +22,48 @@ def get_line_index_ending_with(lines, phrase):
 
 
 def convert_epoch_to_datetime(epoch):
-    return datetime.datetime.strptime(epoch, '%Y %m %d %H %M %S')
+    return datetime.datetime.strptime(epoch, "%Y %m %d %H %M %S")
 
 
 def get_current_frames(system, data, frame0_index):
     end = frame0_index + FRAMES_PER_SYSTEM[system]
     return data[frame0_index:end]
-    
-    
+
+
 def parse_GPS_data(satellite, data):
 
-    keys = ["toc", "a0", "a1", "a2", 
-            "IODE", "crs", "delta_n", "M0",
-            "cuc", "e", "cus", "sqrtA",
-            "toe", "cic", "OMEGA0", "cis",
-            "i0", "crc", "omega", "OMEGA_DOT",
-            "IDOT", "L2", "gps_week", "L2_P_flag",
-            "SV_acc", "SV_health", "TGD", "IODC",
-            "transmision_time", "fit_interval"]
+    keys = [
+        "toc",
+        "a0",
+        "a1",
+        "a2",
+        "IODE",
+        "crs",
+        "delta_n",
+        "M0",
+        "cuc",
+        "e",
+        "cus",
+        "sqrtA",
+        "toe",
+        "cic",
+        "OMEGA0",
+        "cis",
+        "i0",
+        "crc",
+        "omega",
+        "OMEGA_DOT",
+        "IDOT",
+        "L2",
+        "gps_week",
+        "L2_P_flag",
+        "SV_acc",
+        "SV_health",
+        "TGD",
+        "IODC",
+        "transmision_time",
+        "fit_interval",
+    ]
     values = []
     for line in data:
         # Przygotuj linię
@@ -64,18 +88,17 @@ def parse_GPS_data(satellite, data):
     satellite.add_nav(final_values["toc"], final_values)
 
 
-    
 def read(lines, site):
-    # Znajdz indeks końca nagłówka.    
+    # Znajdz indeks końca nagłówka.
     header_end_index = get_line_index_ending_with(lines, "END OF HEADER")
     # Podział na nagłówek i dane
-    header = lines[:header_end_index + 1]
-    data = lines[header_end_index + 1:]
-    
+    header = lines[: header_end_index + 1]
+    data = lines[header_end_index + 1 :]
+
     frame0_index = 0
-    
+
     while True:
-        # Sprawdz system, jeśli nie można przeczyczać - 
+        # Sprawdz system, jeśli nie można przeczyczać -
         # przeczytano cały plik
         try:
             prn = data[frame0_index][:3]
@@ -92,13 +115,9 @@ def read(lines, site):
             if system == "G":
                 parse_GPS_data(satellite, frames)
             else:
-                pass    
+                pass
         except KeyError:
             pass
         # Oblicz indeks następnej klatki 0
         frame0_index += FRAMES_PER_SYSTEM[system]
     return site
-        
-        
-
-

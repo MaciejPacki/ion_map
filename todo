@@ -1,0 +1,6 @@
+#TODO
+
+Pobrać ionex, dla godziny ionexu dla każdego punktu wyznaczyć różnicę TECU.
+Wartosc należy TECU dla IPP z ionexu zinterpolować. 
+Różnica TECU pozwala na oblicznie dcb
+1. wariant dla dokłądnej epoki, wariant dla tec uśredniononycgh 

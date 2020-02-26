@@ -4,6 +4,7 @@ Parser plików obs rnx 2
 # Importy wewnętrzne
 import data_holders.Satellite as Satellite
 import data_holders.Site as Site
+
 # Import zewnętrzne
 import datetime
 
@@ -14,15 +15,15 @@ def get_line_index_ending_with(lines, phrase):
         line = lines[index].rstrip("\n\r")
         line = line.rstrip()
         if line.endswith(phrase):
-            return index 
+            return index
     return None
 
 
 def parse_site_name(header):
     # Znajdz nazwę stacji w nagłówku
     index = get_line_index_ending_with(header, "MARKER NAME")
-    out = header[index].split()[0]    
-    return out   
+    out = header[index].split()[0]
+    return out
 
 
 def parse_site_network(header):
@@ -54,15 +55,15 @@ def parse_obs_type_order(header):
         else:
             line = full_line[6:60].split()
             obs_type_order += line
-    return obs_type_number, obs_type_order 
+    return obs_type_number, obs_type_order
 
 
 def parse_lines_per_sat(obs_type_number):
     if obs_type_number % 5 == 0:
         stay_in_line = 0
-    else: 
+    else:
         stay_in_line = 1
-    number_of_lines = obs_type_number//5 + stay_in_line 
+    number_of_lines = obs_type_number // 5 + stay_in_line
     return number_of_lines
 
 
@@ -72,15 +73,16 @@ def parse_epoch_time(epoch_title):
         if len(value) == 1:
             return value.zfill(2)
         elif len(value) == 9:
-            return value.zfill(10)[:-1] 
+            return value.zfill(10)[:-1]
         elif len(value) == 10:
             return value[:-1]
         else:
-            return value  
+            return value
+
     time_raw = epoch_title[1:26].split()
     time_padded = list(map(pad_with_zeros, time_raw))
     time_str = "".join(time_padded)
-    return datetime.datetime.strptime(time_str, '%y%m%d%H%M%S.%f')
+    return datetime.datetime.strptime(time_str, "%y%m%d%H%M%S.%f")
 
 
 def parse_sat_number(epoch_title):
@@ -92,7 +94,7 @@ def calculate_epoch_title_length(sat_number):
         stay_in_line = 0
     else:
         stay_in_line = 1
-    number_of_lines = sat_number//12 + stay_in_line
+    number_of_lines = sat_number // 12 + stay_in_line
     return number_of_lines
 
 
@@ -113,13 +115,13 @@ def parse_sat_order(epoch_title_index, data, sat_number, epoch_title_length):
 
 def parse_obs_in_line(line, obs, obs_type_number):
     line = line.rstrip("\n\r")
-    # Czytaj obserwacje dla satelity, max 5 obserwacji w 
+    # Czytaj obserwacje dla satelity, max 5 obserwacji w
     # linii.
     for obs_in_line in range(5):
         # Obserwacje zpaisywane w 16 znakowych interwałach,
         # 2 ostatnie znaki winny być odrzucone.
         beg = obs_in_line * 16
-        end = (obs_in_line + 1) * 16 - 2 
+        end = (obs_in_line + 1) * 16 - 2
         try:
             value = float(line[beg:end])
             if value == 0:
@@ -130,10 +132,10 @@ def parse_obs_in_line(line, obs, obs_type_number):
             value = None
         obs.append(value)
         if len(obs) == obs_type_number:
-            break  
+            break
         else:
             continue
-            
+
 
 def read(lines):
     """
@@ -146,14 +148,16 @@ def read(lines):
         epoch_time = parse_epoch_time(epoch_title)
         sat_number = parse_sat_number(epoch_title)
         epoch_title_length = calculate_epoch_title_length(sat_number)
-        sat_order = parse_sat_order(epoch_title_index, data, sat_number, epoch_title_length)
+        sat_order = parse_sat_order(
+            epoch_title_index, data, sat_number, epoch_title_length
+        )
         obs_index = epoch_title_index + epoch_title_length
         # Dodaj epokę do listy epok
         epochs.append(epoch_time)
         # Czytaj obserwacje dla każego satelity
         for sat_index in range(sat_number):
             _obs = []
-            # Wczytaj wszystkei obserwacje 
+            # Wczytaj wszystkei obserwacje
             for i in range(lines_per_sat):
                 line = data[obs_index + i]
                 parse_obs_in_line(line, _obs, obs_type_number)
@@ -162,8 +166,8 @@ def read(lines):
             obs = dict(zip(obs_type_order, _obs))
             # Znajdz prn
             prn = sat_order[sat_index]
-            if prn[1] == ' ':
-                prn = prn[:1] + '0' + prn[2:]
+            if prn[1] == " ":
+                prn = prn[:1] + "0" + prn[2:]
             system = prn[0]
             # Utwórz obiekt satelity
             try:
@@ -179,15 +183,15 @@ def read(lines):
 
     def read_flag4():
         extra_lines = parse_sat_number(epoch_title)
-        # Następny nagłówek epocki 
+        # Następny nagłówek epocki
         return epoch_title_index + extra_lines + 1
 
-    # Znajdz indeks końca nagłówka.    
+    # Znajdz indeks końca nagłówka.
     header_end_index = get_line_index_ending_with(lines, "END OF HEADER")
     # Podział na nagłówek i dane
     header = lines[: header_end_index + 1]
-    data = lines[header_end_index + 1:]
-    
+    data = lines[header_end_index + 1 :]
+
     # Czytaj nagłówek
     obs_type_number, obs_type_order = parse_obs_type_order(header)
     lines_per_sat = parse_lines_per_sat(obs_type_number)
@@ -195,7 +199,7 @@ def read(lines):
     site_network = parse_site_network(header)
     site_xyz = parse_site_xyz(header)
 
-    # Epoch tittle to nagłówek epoki, inicializuj zmienne 
+    # Epoch tittle to nagłówek epoki, inicializuj zmienne
     epoch_title_index = 0
     epoch_title = data[epoch_title_index]
     epochs = []
@@ -218,4 +222,3 @@ def read(lines):
             site = Site.Site(site_name, site_network, site_xyz, epochs, satellites)
             break
     return site
-
