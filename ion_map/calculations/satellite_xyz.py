@@ -10,9 +10,6 @@ import calculations.common
 from constants import c, GM, OMEGA_E
 
 
-def OTHER(epoch, nav, site_xyz):
-    pass
-
 
 def GPS(epoch, nav, site_xyz, pseudo):
     """

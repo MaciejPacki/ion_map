@@ -134,20 +134,17 @@ def read(lines):
     def read_flag0():
         current_data = get_current_data(data, epoch_tittle_index, epoch_lines_number)
         epoch_time = parse_new_epoch(epoch_tittle)
-        epochs.append(epoch_time)
 
         for line in current_data:
             prn, obs = parse_sat_obs(line, obs_type_order)
             obs = transform_obs(obs)
             system = prn[0]
-            try:
-                satellites[prn].add_obs(epoch_time, obs)
-            except KeyError:
-                if system == "G":
+            if system == "G":
+                try:
+                    satellites[prn].add_obs(epoch_time, obs)
+                except KeyError:
                     satellites[prn] = Satellite.Satellite_GPS(prn)
-                else:
-                    satellites[prn] = Satellite.Satellite_OTHER(prn)
-                satellites[prn].add_obs(epoch_time, obs)
+                    satellites[prn].add_obs(epoch_time, obs)
 
     # Znajdz indeks końca nagłówka.
     header_end_index = get_line_index_ending_with(lines, "END OF HEADER")
@@ -162,7 +159,6 @@ def read(lines):
     site_xyz = parse_site_xyz(header)
 
     # Inicializuj
-    epochs = []
     satellites = {}
     epoch_tittle_index = 0
 
@@ -180,5 +176,5 @@ def read(lines):
         else:
             pass
         epoch_tittle_index += epoch_lines_number + 1
-    site = Site.Site(site_name, site_network, site_xyz, epochs, satellites)
+    site = Site.Site(site_name, site_network, site_xyz, satellites)
     return site

@@ -4,65 +4,41 @@ import numpy as np
 import calculations.common as common
 
 
-def obs_comb(sat):
+def L4(sat):
     epochs = []
-    P4, L4, L4s = [], [], []
-
-    for e in sat.L4_shifted.keys():
+    L4 = []
+    cs_glab = [2490.00,
+    31650.00,
+31890.00,
+31890.00,
+53550.00,
+]
+    cs_mwwl = [52560, 55470, 59130, 59160, 59250, 59280, 59460, 59490]
+    cs_tecr = [34710, 49080, 49470]
+    for e in sat.L4.keys():
         epochs.append(common.datetime_to_secs_of_day(e))
-        P4.append(sat.P4[e])
         L4.append(sat.L4[e])
-        L4s.append(sat.L4_shifted[e])
 
-    plt.plot(epochs, P4, "r.", label="P4")
-    plt.legend(loc="upper right")
-    plt.show()
+        
     plt.plot(epochs, L4, "b.", label="L4")
+
+    
+    # for i in cs_glab[:-1]:
+    #     plt.axvline(x=i, color="r")
+    # plt.axvline(x=cs_glab[-1], color="r", label="GLAB CS")
+    for i in cs_mwwl[:-1]:    
+        plt.axvline(x=i, color="g")
+    plt.axvline(x=cs_mwwl[-1], color="g", label="MWWL CS")
+    # for i in cs_tecr[:-1]:    
+    #     plt.axvline(x=i, color="y")
+    # plt.axvline(x=cs_tecr[-1], color="y", label="TECR CS")
+    
+        
     plt.legend(loc="upper right")
     plt.show()
-    plt.plot(epochs, L4s, "g.", label="L4_s")
-    plt.legend(loc="upper right")
-    plt.show()
 
 
-def obs_comb_2sat(sat1, sat2):
-    fig, (ax1, ax2) = plt.subplots(2, 1)
-    fig.subplots_adjust(hspace=0.5)
 
-    epochs1 = []
-    P41, L41, L4s1 = [], [], []
-
-    for e in sat1.L4_shifted.keys():
-        epochs1.append(common.datetime_to_secs_of_day(e))
-        P41.append(sat1.P4[e])
-        L41.append(sat1.L4[e])
-        L4s1.append(sat1.L4_shifted[e])
-
-    epochs2 = []
-    P42, L42, L4s2 = [], [], []
-
-    for e in sat2.L4_shifted.keys():
-        epochs2.append(common.datetime_to_secs_of_day(e))
-        P42.append(sat2.P4[e])
-        L42.append(sat2.L4[e])
-        L4s2.append(sat2.L4_shifted[e])
-
-    ax1.plot(epochs1, P41, "r.", label="P4")
-    ax1.plot(epochs1, L41, "b.", label="L4")
-    ax1.plot(epochs1, L4s1, "g.", label="L4_s")
-    ax1.set_title(f"{sat1.prn}")
-    ax1.set_ylabel("[m]")
-    ax1.set_xlabel("[s]")
-
-    ax2.plot(epochs2, P42, "r.", label="P4")
-    ax2.plot(epochs2, L42, "b.", label="L4")
-    ax2.plot(epochs2, L4s2, "g.", label="L4_s")
-    ax2.set_title(f"{sat2.prn}")
-    ax2.set_ylabel("[m]")
-    ax2.set_xlabel("[s]")
-    plt.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), fancybox=True, ncol=3)
-
-    plt.show()
 
 
 def vtec(site):

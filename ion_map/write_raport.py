@@ -13,7 +13,7 @@ def hour(site):
     for hour, c_data in data.items():
         if hour == 8:
             out_file = site_path + str(hour).zfill(2)
-            write_data = "#{:>19}{:>10}{:>20}{:>20}{:>20}\n".format(
+            write_data = "#N{:>19}{:>10}{:>20}{:>20}{:>20}\n".format(
                 "EPOCH", "PRN", "IPP lat [deg]", "IPP lon [deg]", "VTEC"
             )
             for line in c_data:

@@ -152,8 +152,7 @@ def read(lines):
             epoch_title_index, data, sat_number, epoch_title_length
         )
         obs_index = epoch_title_index + epoch_title_length
-        # Dodaj epokę do listy epok
-        epochs.append(epoch_time)
+    
         # Czytaj obserwacje dla każego satelity
         for sat_index in range(sat_number):
             _obs = []
@@ -169,16 +168,13 @@ def read(lines):
             if prn[1] == " ":
                 prn = prn[:1] + "0" + prn[2:]
             system = prn[0]
+            if system == "G":
             # Utwórz obiekt satelity
-            try:
-                satellites[prn].add_obs(epoch_time, obs)
-            # Utwórz obiekt satelity dla odpowiedniego systemu
-            except KeyError:
-                if system == "G":
+                try:
+                    satellites[prn].add_obs(epoch_time, obs)
+                except KeyError:
                     satellites[prn] = Satellite.Satellite_GPS(prn)
-                else:
-                    satellites[prn] = Satellite.Satellite_OTHER(prn)
-                satellites[prn].add_obs(epoch_time, obs)
+                    satellites[prn].add_obs(epoch_time, obs)
         return obs_index
 
     def read_flag4():
@@ -202,7 +198,6 @@ def read(lines):
     # Epoch tittle to nagłówek epoki, inicializuj zmienne
     epoch_title_index = 0
     epoch_title = data[epoch_title_index]
-    epochs = []
     satellites = {}
 
     # Czytaj dane
@@ -219,6 +214,6 @@ def read(lines):
         try:
             epoch_title = data[epoch_title_index]
         except IndexError:
-            site = Site.Site(site_name, site_network, site_xyz, epochs, satellites)
+            site = Site.Site(site_name, site_network, site_xyz, satellites)
             break
     return site

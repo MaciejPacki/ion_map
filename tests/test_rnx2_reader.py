@@ -9,7 +9,7 @@ from textwrap import wrap
 
 # Importy wewnętrzne
 sys.path.append(r"..\ion_map")
-import readers.rnx_reader as rnx_reader
+from readers import rnx_obs, rnx_nav
 
 
 class Test_rnx_reader(unittest.TestCase):
@@ -18,11 +18,9 @@ class Test_rnx_reader(unittest.TestCase):
         # obs_file = r"test_files\WROC00POL_R_20193200000_01D_30S_MO.rnx"
         obs_file = r"test_files\bogi0760.15o"
         nav_file = r"test_files\brdm0760.15p"
-        self.site = rnx_reader.read(obs_file, nav_file)
+        self.site = rnx_obs.read(obs_file)
+        self.nav = rnx_nav.read(nav_file)
 
-    @classmethod
-    def tearDownClass(self):
-        self.site = None
 
     def test_site_name(self):
         name = self.site.name
@@ -38,7 +36,7 @@ class Test_rnx_reader(unittest.TestCase):
 
     def test_satellite_in_epoch(self):
         epoch = datetime.datetime(2015, 3, 17, 14, 40, 30, 0)
-        ref_sats_str = "G11G12G13G15G17G18G22G24G28G30R06R07R08R09R10R15R16R17R18R19"
+        ref_sats_str = "G11G12G13G15G17G18G22G24G28G30"
         ref_sats = sorted(wrap(ref_sats_str, 3))
         test_sats = []
         for prn, sat in self.site.satellites.items():
@@ -53,19 +51,15 @@ class Test_rnx_reader(unittest.TestCase):
     def test_obs_in_epoch(self):
         epoch = datetime.datetime(2015, 3, 17, 11, 38, 00, 0)
         sat1 = self.site.satellites["G07"].obs[epoch]
-        sat2 = self.site.satellites["R15"].obs[epoch]
 
         self.assertEqual(sat1["L1"], 110440932.100)
         self.assertEqual(sat1["P2"], 21016202.080)
         self.assertEqual(sat1["C2"], None)
 
-        self.assertEqual(sat2["L2"], 79426089.358)
-        self.assertEqual(sat2["C1"], 19110201.856)
-        self.assertEqual(sat2["S2"], 49.500)
 
     def test_nav_in_epoch(self):
         epoch = datetime.datetime(2015, 3, 17, 13, 59, 44)
-        sat = self.site.satellites["G24"].nav[epoch]
+        sat = self.nav["G24"][epoch]
 
         ref_raw = (
             "-4.512676969171e-05-6.821210263297e-13+0.000000000000e+00"

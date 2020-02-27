@@ -1,11 +1,11 @@
 import math, statistics
-from constants import L1_freq, L2_freq, L1_lambda, L2_lambda, c, dcb_rec
+from constants import L1_freq, L2_freq, L1_lambda, L2_lambda, c
 
 
 def P4(obs, dcb_P1P2, dcb_P1C1):
     P4 = None
     try:
-        P4 = obs["P2"] - obs["C1"] + dcb_P1P2 - dcb_P1C1 + dcb_rec
+        P4 = obs["P2"] - obs["C1"] + dcb_P1P2 - dcb_P1C1
 
     except TypeError:
         pass
@@ -37,8 +37,7 @@ def L4_shifted(arcs, L4, P4):
     epochs = sorted(L4.keys())
     for arc in arcs:
         # Znajdz łuk
-        arc_beg = arc[0]
-        arc_end = arc[1]
+        arc_beg, arc_end = arc
         arc_beg_index = epochs.index(arc_beg)
         arc_end_index = epochs.index(arc_end)
         current_epochs = epochs[arc_beg_index : arc_end_index + 1]

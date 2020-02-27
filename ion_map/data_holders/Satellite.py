@@ -14,11 +14,9 @@ import calculations.stec
 import calculations.vtec
 
 
-class Satellite:
+class Satellite_GPS:
     def __init__(self, prn):
         self.prn = prn
-        self.system = prn[0]
-        self.num = prn[1:]
         self.obs = {}
         self.nav = {}
         self.xyz = {}
@@ -30,34 +28,29 @@ class Satellite:
         self.MWWL = {}
         self.L4_shifted = {}
 
-    @property
-    def epochs(self):
+
+    def calculate_eligible_epochs(self):
         epochs = []
         for epoch in sorted(self.obs.keys()):
             if any([self.obs[epoch][o] == None for o in ["C1", "P2", "L1", "L2"]]):
                 pass
             else:
                 epochs.append(epoch)
-        return epochs
+        self.epochs = epochs
 
     def add_obs(self, epoch_time, obs_data):
         self.obs[epoch_time] = obs_data
 
-    def add_nav(self, epoch_time, nav_data):
-        self.nav[epoch_time] = nav_data
 
-    def get_closest_nav(self, epoch):
-        nav_epochs = self.nav.keys()
-        closest_epoch = min(nav_epochs, key=lambda x: abs(x - epoch))
-        return self.nav[closest_epoch]
-
-    def _calculate_xyz(self, site_xyz, calculator):
+    def calculate_xyz(self, site_xyz, nav):
         for epoch in self.epochs:
             pseudo = self.obs[epoch]["C1"]
-            nav = self.get_closest_nav(epoch)
-            self.xyz[epoch] = calculator(epoch, nav, site_xyz, pseudo)
+            nav_epochs = nav[self.prn].keys()
+            closest_nav_epoch = min(nav_epochs, key=lambda x: abs(x - epoch))
+            closest_nav = nav[self.prn][closest_nav_epoch]
+            self.xyz[epoch] = calculations.satellite_xyz.GPS(epoch, closest_nav, site_xyz, pseudo)
 
-    def _calculate_azimuth_and_elevation(self, site_xyz):
+    def calculate_azimuth_and_elevation(self, site_xyz):
         for epoch in self.epochs:
             sat_xyz = self.xyz[epoch]
             if sat_xyz != None:
@@ -67,9 +60,8 @@ class Satellite:
                 self.azimuth[epoch] = azimuth
                 self.elevation[epoch] = elevation
 
-    def _calculate_ipp(self, site_blh, ionosphere_h):
-        # Maska elewacji
-        elevation_mask = math.radians(30)
+    def calculate_ipp(self, site_blh, ionosphere_h, elev_mask):
+        elevation_mask = math.radians(elev_mask)
         for epoch in self.epochs:
             if epoch in self.elevation and self.elevation[epoch] > elevation_mask:
                 sat_az_el = self.azimuth[epoch], self.elevation[epoch]
@@ -120,31 +112,6 @@ class Satellite:
         else:
             self.arcs = {}
 
-    def prepare_out_data(self):
-        out_data = ""
-        for epoch in self.epochs:
-            line = ""
-            if epoch in self.STEC:
-                date = epoch.strftime("%Y-%m-%d %H:%M:%S")
-                prn = self.prn
-                x = self.xyz[epoch][0]
-                y = self.xyz[epoch][1]
-                z = self.xyz[epoch][2]
-                az = math.degrees(self.azimuth[epoch])
-                el = math.degrees(self.elevation[epoch])
-                ipp_lat = math.degrees(self.ipp[epoch][0])
-                ipp_lon = math.degrees(self.ipp[epoch][1])
-                VTEC = self.VTEC[epoch]
-
-                line += "{:>20}{:>10}{:>-20.3f}{:>-20.3f}{:>-20.3f}".format(
-                    date, prn, x, y, z
-                )
-                line += "{:>-20.4f}{:>-20.4f}{:>-20.7f}{:>-20.7f}{:>-20.7f}\n".format(
-                    az, el, ipp_lat, ipp_lon, VTEC
-                )
-
-            out_data += line
-        return out_data
 
     def prepare_out_hour(self, hour):
         out = []
@@ -162,39 +129,4 @@ class Satellite:
         return out
 
 
-class Satellite_GPS(Satellite):
-    def __init__(self, prn):
-        super().__init__(prn)
 
-    def calculate_xyz(self, site_xyz):
-        calculator = calculations.satellite_xyz.GPS
-        self._calculate_xyz(site_xyz, calculator)
-
-    def calculate_azimuth_and_elevation(self, site_xyz):
-        self._calculate_azimuth_and_elevation(site_xyz)
-
-    def calculate_ipp(self, site_blh, ionosphere_h):
-        self._calculate_ipp(site_blh, ionosphere_h)
-
-
-class Satellite_OTHER(Satellite):
-    def __init__(self, prn):
-        super().__init__(prn)
-
-    def calculate_azimuth_and_elevation(self, site_xyz):
-        pass
-
-    def calculate_xyz(self, site_xyz):
-        pass
-
-    def calculate_ipp(self, site_blh, ionosphere_h):
-        pass
-
-    def calculate_arcs(self):
-        pass
-
-    def calculate_L4_shifted(self):
-        pass
-
-    def calculate_P4_L4_MWWL(self, sat_dcb):
-        pass

@@ -30,7 +30,7 @@ def get_current_frames(system, data, frame0_index):
     return data[frame0_index:end]
 
 
-def parse_GPS_data(satellite, data):
+def parse_GPS_data(prn, nav, data):
 
     keys = [
         "toc",
@@ -85,10 +85,12 @@ def parse_GPS_data(satellite, data):
     values[1:] = list(map(float, values[1:]))
     final_values = dict(zip(keys, values))
     # Dodaj dane do obiektu satelity
-    satellite.add_nav(final_values["toc"], final_values)
+    if prn not in nav:
+        nav[prn] = {}
+    nav[prn][final_values["toc"]] = final_values
 
-
-def read(lines, site):
+def read(lines):
+    nav = {}
     # Znajdz indeks końca nagłówka.
     header_end_index = get_line_index_ending_with(lines, "END OF HEADER")
     # Podział na nagłówek i dane
@@ -105,19 +107,15 @@ def read(lines, site):
             system = prn[0]
         except IndexError:
             break
-        # Sprawdz czy satelita jest obserwowany przez stację
-        try:
-            satellite = site.satellites[prn]
-            # Czytaj aktualne klatki
-            frames = get_current_frames(system, data, frame0_index)
-            # Czytaj obserwację dla odpowiedniego systemu
-            # TODO Dopisać resztę systemów
-            if system == "G":
-                parse_GPS_data(satellite, frames)
-            else:
-                pass
-        except KeyError:
+
+        # Czytaj aktualne klatki
+        frames = get_current_frames(system, data, frame0_index)
+        # Czytaj obserwację dla odpowiedniego systemu
+        if system == "G":
+            parse_GPS_data(prn, nav, frames)
+        else:
             pass
+
         # Oblicz indeks następnej klatki 0
         frame0_index += FRAMES_PER_SYSTEM[system]
-    return site
+    return nav

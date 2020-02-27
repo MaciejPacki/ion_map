@@ -9,15 +9,14 @@ from textwrap import wrap
 
 # Importy wewnętrzne
 sys.path.append(r"..\ion_map")
-import readers.rnx_reader as rnx_reader
+from readers import rnx_obs, rnx_nav
 
 
 class Test_rnx_reader(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         obs_file = r"test_files\WROC00POL_R_20193200000_01D_30S_MO.rnx"
-        nav_file = r"test_files\brdm0760.15p"
-        self.site = rnx_reader.read(obs_file, nav_file)
+        self.site = rnx_obs.read(obs_file)
 
     @classmethod
     def tearDownClass(self):

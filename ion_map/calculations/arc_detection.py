@@ -3,12 +3,13 @@ import datetime
 import calculations.common as common
 
 number_of_samples = 10
-cycle_slip_threshold = 0.1
+cycle_slip_threshold = 0.05
 gap_threshold = 60  # 60 secs
 length_threshold = 15 * 60  # 15 minut
 
 
 def gap_detector(epochs, out=None):
+    
     if out == None:
         out = []
     arc_beg = epochs[0]
