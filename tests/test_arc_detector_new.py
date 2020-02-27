@@ -23,11 +23,11 @@ class Test_plots(unittest.TestCase):
         site = rnx_obs.read(o_file)
         nav = rnx_nav.read(n_file)
         sat_dcb = dcb.read(dcb_P1P2_file, dcb_P1C1_file)
-        xyz = site.xyz 
+        xyz = site.xyz
         blh = site.blh
         ionosphere_h = 450
         elev_mask = 30
-        
+
         self.sat = site.satellites["G24"]
         self.sat.calculate_eligible_epochs()
         self.sat.calculate_xyz(xyz, nav)
@@ -35,7 +35,6 @@ class Test_plots(unittest.TestCase):
         self.sat.calculate_ipp(blh, ionosphere_h, elev_mask)
         self.sat.calculate_P4_L4_MWWL(sat_dcb)
         self.sat.calculate_arcs()
-
 
     def test_arc_detector(self):
         new_arcs = calculations.arc_detection_new.arc_detector(
@@ -46,12 +45,14 @@ class Test_plots(unittest.TestCase):
         print("-> LEAST FIT ARCS")
         for i in old_arcs:
             print(i[0], i[1])
-            print(common.datetime_to_secs_of_day(i[0]), common.datetime_to_secs_of_day(i[1]))
-        # 
+            print(
+                common.datetime_to_secs_of_day(i[0]),
+                common.datetime_to_secs_of_day(i[1]),
+            )
+        #
         # print("\n-> MWWL_TECR CS")
         # for i in new_arcs:
         #     print(i, common.datetime_to_secs_of_day(i))
-            
 
 
 if __name__ == "__main__":

@@ -89,6 +89,7 @@ def parse_GPS_data(prn, nav, data):
         nav[prn] = {}
     nav[prn][final_values["toc"]] = final_values
 
+
 def read(lines):
     nav = {}
     # Znajdz indeks końca nagłówka.

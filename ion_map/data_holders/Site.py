@@ -10,18 +10,18 @@ class Site:
         self.network = network
         self.xyz = xyz
         self.satellites = satellites
-    
+
     def __str__(self):
         out = f"SITE: {self.name}\n"
-        out += f"SATS: {len(self.satellites.keys())}\n" 
+        out += f"SATS: {len(self.satellites.keys())}\n"
         out += f"{sorted(list(self.satellites.keys()))}"
         return out
-        
+
     @property
     def blh(self):
         blh = calculations.common.xyz_to_blh(self.xyz)
         return blh
-        
+
     def get_hour_data(self):
         hours = {}
         for hour in range(0, 24):
@@ -34,7 +34,7 @@ class Site:
             lines.sort(key=lambda x: x[0])
 
         return hours
-    
+
     def process_data(self, nav, sat_dcb, ionosphere_h, elev_mask):
         for satellite in self.satellites.values():
             satellite.calculate_eligible_epochs()

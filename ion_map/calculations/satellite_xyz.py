@@ -10,7 +10,6 @@ import calculations.common
 from constants import c, GM, OMEGA_E
 
 
-
 def GPS(epoch, nav, site_xyz, pseudo):
     """
     Wyznaczanie pozycji dla satelitów GPS

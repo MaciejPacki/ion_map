@@ -14,7 +14,7 @@ def read(P1P2_path, P1C1_path):
                 try:
                     data = line.split()
                     sat = data[0]
-                    val = float(data[1]) * 10e-10 * c
+                    val = float(data[1]) * 1e-9 * c
                     dcb[sat] = val
                 except IndexError:
                     pass

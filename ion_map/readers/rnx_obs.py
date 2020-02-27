@@ -21,7 +21,7 @@ def read(obs_path):
         rnx_version = first_line[5]
         # Znajdz typ pliku
         rnx_type = first_line[20]
-        
+
         if rnx_type == "O":
             if rnx_version == "2":
                 site = rnx2_obs.read(lines)

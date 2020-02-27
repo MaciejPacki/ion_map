@@ -19,7 +19,7 @@ def read(obs_path):
         rnx_version = first_line[5]
         # Znajdz typ pliku
         rnx_type = first_line[20]
-        
+
         if rnx_type == "N":
             if rnx_version == "3":
                 nav = rnx3_nav.read(lines)

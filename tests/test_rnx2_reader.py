@@ -21,7 +21,6 @@ class Test_rnx_reader(unittest.TestCase):
         self.site = rnx_obs.read(obs_file)
         self.nav = rnx_nav.read(nav_file)
 
-
     def test_site_name(self):
         name = self.site.name
         self.assertEqual(name, "BOGI")
@@ -55,7 +54,6 @@ class Test_rnx_reader(unittest.TestCase):
         self.assertEqual(sat1["L1"], 110440932.100)
         self.assertEqual(sat1["P2"], 21016202.080)
         self.assertEqual(sat1["C2"], None)
-
 
     def test_nav_in_epoch(self):
         epoch = datetime.datetime(2015, 3, 17, 13, 59, 44)

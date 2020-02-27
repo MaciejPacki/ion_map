@@ -9,7 +9,7 @@ length_threshold = 15 * 60  # 15 minut
 
 
 def gap_detector(epochs, out=None):
-    
+
     if out == None:
         out = []
     arc_beg = epochs[0]

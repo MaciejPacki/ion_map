@@ -26,5 +26,3 @@ for obs_file in obs_files:
     site = rnx_obs.read(obs_file)
     site.process_data(nav, sat_dcb, ionosphere_h, elev_mask)
     write_raport.hour(site)
-
-

@@ -23,18 +23,18 @@ class Test_plots(unittest.TestCase):
         sat_dcb = dcb.read(dcb_P1P2_file, dcb_P1C1_file)
         ionosphere_h = 450
         elev_mask = 30
-        
+
         site.process_data(nav, sat_dcb, ionosphere_h, elev_mask)
 
         self.site = site
 
-
     # def test_plot_vtec(self):
     #     plotters.plots.vtec(self.site)
-        
+
     def test_plot_l4(self):
         sat = self.site.satellites["G24"]
         plotters.plots.L4(sat)
+
 
 if __name__ == "__main__":
     unittest.main()

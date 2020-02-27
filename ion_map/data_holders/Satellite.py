@@ -28,7 +28,6 @@ class Satellite_GPS:
         self.MWWL = {}
         self.L4_shifted = {}
 
-
     def calculate_eligible_epochs(self):
         epochs = []
         for epoch in sorted(self.obs.keys()):
@@ -41,14 +40,15 @@ class Satellite_GPS:
     def add_obs(self, epoch_time, obs_data):
         self.obs[epoch_time] = obs_data
 
-
     def calculate_xyz(self, site_xyz, nav):
         for epoch in self.epochs:
             pseudo = self.obs[epoch]["C1"]
             nav_epochs = nav[self.prn].keys()
             closest_nav_epoch = min(nav_epochs, key=lambda x: abs(x - epoch))
             closest_nav = nav[self.prn][closest_nav_epoch]
-            self.xyz[epoch] = calculations.satellite_xyz.GPS(epoch, closest_nav, site_xyz, pseudo)
+            self.xyz[epoch] = calculations.satellite_xyz.GPS(
+                epoch, closest_nav, site_xyz, pseudo
+            )
 
     def calculate_azimuth_and_elevation(self, site_xyz):
         for epoch in self.epochs:
@@ -112,7 +112,6 @@ class Satellite_GPS:
         else:
             self.arcs = {}
 
-
     def prepare_out_hour(self, hour):
         out = []
         for epoch, L4 in self.L4_shifted.items():
@@ -127,6 +126,3 @@ class Satellite_GPS:
                     ]
                 )
         return out
-
-
-

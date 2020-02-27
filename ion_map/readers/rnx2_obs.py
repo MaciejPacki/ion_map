@@ -152,7 +152,7 @@ def read(lines):
             epoch_title_index, data, sat_number, epoch_title_length
         )
         obs_index = epoch_title_index + epoch_title_length
-    
+
         # Czytaj obserwacje dla każego satelity
         for sat_index in range(sat_number):
             _obs = []
@@ -169,7 +169,7 @@ def read(lines):
                 prn = prn[:1] + "0" + prn[2:]
             system = prn[0]
             if system == "G":
-            # Utwórz obiekt satelity
+                # Utwórz obiekt satelity
                 try:
                     satellites[prn].add_obs(epoch_time, obs)
                 except KeyError:
